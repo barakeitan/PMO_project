@@ -9,4 +9,9 @@ public class PhysicsBook extends BookBase {
 		addPages(16);
 	}
 
+	
+	@Override
+	public BookBase clone() {
+		return new PhysicsBook(bookIndex);
+	}
 }

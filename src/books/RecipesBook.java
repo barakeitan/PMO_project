@@ -10,4 +10,9 @@ public class RecipesBook extends BookBase {
 		addPages(20);
 	}
 
+	
+	@Override
+	public BookBase clone() {
+		return new RecipesBook(bookIndex);
+	}
 }

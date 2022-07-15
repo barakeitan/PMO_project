@@ -8,5 +8,10 @@ public class MusicBook extends BookBase {
 		super(" Music ", bookIndex, Color.yellow);
 		addPages(10);
 	}
+	
+	@Override
+	public BookBase clone() {
+		return new MusicBook(bookIndex);
+	}
 
 }

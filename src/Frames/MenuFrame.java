@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
 import books.BookBase;
+import books.BookFactory;
 
 /**
  * 
@@ -31,9 +32,9 @@ public class MenuFrame extends JFrame{
 	/**
 	 * Constructor that reset the notebook frame
 	 */
-	public MenuFrame(List<BookBase> books) {
+	public MenuFrame() {
 		this.panel = new MenuPanel();
-		this.books = books;
+		this.books = BookFactory.GetInstance().getBookList();
 		setSize(370, 400);
 		addTitle();
 		addInfo();
@@ -62,7 +63,7 @@ public class MenuFrame extends JFrame{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					//NotebookFrame frame = new NotebookFrame(bookBase);
-					BookListFrame bookListFrame = new BookListFrame();
+					BookListFrame bookListFrame = new BookListFrame(bookBase.getName());
 				}
 			});
 			count++;

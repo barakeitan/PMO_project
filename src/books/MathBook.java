@@ -9,4 +9,8 @@ public class MathBook extends BookBase {
 		addPages(15);
 	}
 
+	@Override
+	public BookBase clone() {
+		return new MathBook(bookIndex);
+	}
 }

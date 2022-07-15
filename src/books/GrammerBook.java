@@ -9,4 +9,8 @@ public class GrammerBook extends BookBase {
 		addPages(15);
 	}
 
+	@Override
+	public BookBase clone() {
+		return new GrammerBook(bookIndex);
+	}
 }

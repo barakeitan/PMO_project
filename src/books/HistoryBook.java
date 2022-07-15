@@ -9,4 +9,8 @@ public class HistoryBook extends BookBase {
 		addPages(12);
 	}
 
+	@Override
+	public BookBase clone() {
+		return new HistoryBook(bookIndex);
+	}
 }

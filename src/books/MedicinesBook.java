@@ -8,5 +8,9 @@ public class MedicinesBook extends BookBase {
 		super("Medicines", bookIndex, new Color(150, 50, 255));
 		addPages(9);
 	}
-
+	
+	@Override
+	public BookBase clone() {
+		return new MedicinesBook(bookIndex);
+	}
 }

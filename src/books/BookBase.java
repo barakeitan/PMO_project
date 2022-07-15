@@ -83,11 +83,22 @@ public abstract class BookBase {
 		return this.bookIndex;
 	}
 	
+	public void setBookIndex(int bookIndex) {
+		this.bookIndex = bookIndex;
+	}
+	
 	/**
 	 * adding page
 	 */
 	public void addPage() {
-		Page page = new Page(pages.size(), "");
+		this.addPage("");
+	}
+	
+	/**
+	 * adding page
+	 */
+	public void addPage(String context) {
+		Page page = new Page(pages.size(), context);
 		pages.add(page);
 	}
 	public void addPages(int numOfPages) {
@@ -95,4 +106,5 @@ public abstract class BookBase {
 			addPage();
 		}
 	}
+	public abstract BookBase clone();
 	}

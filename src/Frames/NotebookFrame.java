@@ -108,7 +108,8 @@ public class NotebookFrame extends JFrame{
         	 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FileManager.saveNotebook(notebook.getName(), notebook.getBookIndex(), notebook.getPages());
+				notebook.getPages().get(pageCount).setText(textArea.getText());
+				FileManager.saveNotebook(notebook);
 			}
 		});
         this.add(nextBtn, BorderLayout.EAST);

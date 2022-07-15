@@ -9,4 +9,9 @@ public class GeographyBook extends BookBase {
 		addPages(13);
 	}
 
+	@Override
+	public BookBase clone() {
+		return new GeographyBook(bookIndex);
+	}
+
 }
