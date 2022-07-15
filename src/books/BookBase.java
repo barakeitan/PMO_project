@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public abstract class BookBase {
 	String name;
 	Color color;
+	int bookIndex;
 	ArrayList<Page> pages;
 	
 	/**
@@ -18,20 +19,22 @@ public abstract class BookBase {
 	 * @param name of the notebook
 	 * @param pages of the notebook
 	 */
-	public BookBase(String name, Color color, ArrayList<Page> pages) {
+	public BookBase(String name, int bookIndex, Color color, ArrayList<Page> pages) {
 		this.name = name;
 		this.pages = pages;
 		this.color = color;
+		this.bookIndex = bookIndex;
 	}
 	
 	/**
 	 * 
 	 * @param name of the notebook
 	 */
-	public BookBase(String name, Color color) {
+	public BookBase(String name, int bookIndex, Color color) {
 		this.name = name;
 		this.pages = new ArrayList<Page>();
 		this.color = color;
+		this.bookIndex = bookIndex;
 	}
 
 	/**
@@ -74,6 +77,10 @@ public abstract class BookBase {
 	 */
 	public void setPages(ArrayList<Page> pages) {
 		this.pages = pages;
+	}
+	
+	public int getBookIndex() {
+		return this.bookIndex;
 	}
 	
 	/**
