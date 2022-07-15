@@ -29,10 +29,8 @@ public class FileManager {
 				  FileManager.createFileIfItNotExist(folderName, fullFileName);
 			      FileWriter myWriter = new FileWriter(fullFileName);
 			      myWriter.write(book.getPages().get(i).getText());
-			      System.out.println(book.getPages().get(i).getText());
 			      myWriter.close();
 			    } catch (IOException e) {
-			      System.out.println("An error occurred.");
 			      e.printStackTrace();
 			    }
 		}
@@ -79,6 +77,7 @@ public class FileManager {
 		File[] listOfFiles = folder.listFiles();
 
 		try {
+			book.resetPages();
 			for (File file : listOfFiles) {
 			    if (file.isFile()) {
 			    	String text = new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
@@ -88,6 +87,19 @@ public class FileManager {
 		} catch (Exception e) {
 		}
 	}
+	
+	public static void deleteNotebook(BookBase book)
+	{
+		String folderName = String.format("%s\\%s\\notebook%d", FileManager.BOOKS_PATH, book.getName().replaceAll(" ", ""), book.getBookIndex());
+		File index = new File(folderName);
+		String[]entries = index.list();
+		for(String s: entries){
+		    File currentFile = new File(index.getPath(),s);
+		    currentFile.delete();
+		}
+		index.delete();
+	}
+
 	
 	private static boolean createFileIfItNotExist(String folderName, String fullFileName) {
 		boolean isNewFileCreated = false;
@@ -99,7 +111,6 @@ public class FileManager {
 			}
 		   File myFile = new File(fullFileName);
 		   if (myFile.createNewFile()){
-		    System.out.println("File is created!");
 		    isNewFileCreated = true;
 		   } else{
 		    //System.out.println("File already exists.");

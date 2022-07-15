@@ -62,6 +62,10 @@ public abstract class BookBase {
 		this.color = color;
 	}
 	
+	public void resetPages() {
+		this.pages = new ArrayList<Page>();
+	}
+	
 	/**
 	 * 
 	 * @return pages

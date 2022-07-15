@@ -56,10 +56,10 @@ public class NotebookFrame extends JFrame{
 	 * creating the buttons
 	 */
 	public void createButtons() {
-		final JButton prevBtn = new JButton("prev page");
+		final JButton prevBtn = new JButton("Prev page");
 		prevBtn.setEnabled(false);
-        final JButton nextBtn = new JButton("next page");
-        final JButton saveBtn = new JButton("Save notebook");
+        final JButton nextBtn = new JButton("Next page");
+        final JButton saveBtn = new JButton("Save notebook & back to menu");
         prevBtn.addActionListener(new ActionListener() {
 			
         	/**
@@ -75,7 +75,6 @@ public class NotebookFrame extends JFrame{
 						prevBtn.setEnabled(false);
 					}
 					nextBtn.setEnabled(true);
-					System.out.println(pageCount);
 					textArea.setText(prevPage.getText());
 					titleLabel.setText("Page " + (pageCount + 1));
 					setVisible(true);
@@ -102,14 +101,11 @@ public class NotebookFrame extends JFrame{
 			}
 		});
         saveBtn.addActionListener(new ActionListener() {
-			
-        	/**
-        	 * waiting for click on next button
-        	 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				notebook.getPages().get(pageCount).setText(textArea.getText());
 				FileManager.saveNotebook(notebook);
+				setVisible(false);
 			}
 		});
         this.add(nextBtn, BorderLayout.EAST);

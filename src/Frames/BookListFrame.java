@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import Logic.FileManager;
 import books.BookBase;
+import books.BookFactory;
 import books.Page;
 
 public class BookListFrame extends JFrame {
@@ -23,14 +24,18 @@ public class BookListFrame extends JFrame {
 	private JPanel controlBtnPanel;
 	private JPanel notebookButtonsPanel;
 	private List<BookBase> bookList;
+	private List<JButton> notebookBtnsList;
+	private String bookName;
 	
 	public BookListFrame(String bookName) {
+		this.bookName = bookName;
 		this.bookList = FileManager.getAllBookList(bookName);
+		this.notebookBtnsList = new ArrayList<JButton>();
 		this.panel = new MenuPanel();
 		this.controlBtnPanel = new JPanel();
 		setSize(370, 400);
-		createControlButtons();
-		createButtons();
+		addControlButtons();
+		addNotebookButtons();
 		panel.setBackground(new Color(150, 255, 255));
 		controlBtnPanel.setBackground(new Color(231, 154, 100));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,35 +47,42 @@ public class BookListFrame extends JFrame {
 		setVisible(true);
 	}
 	
-	public void createControlButtons() {
+	public void addControlButtons() {
 		final JButton addBtn = new JButton("Add new book");
 		addBtn.setEnabled(true);
         final JButton removeBtn = new JButton("Remove last");
-        final JButton menuBtn = new JButton("back to menu");
+        final JButton menuBtn = new JButton("Back to menu");
         addBtn.addActionListener(new ActionListener() {
 			
         	/**
-        	 * waiting for click on previews button
+        	 * add new notebook
         	 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				int index = bookList.size() + 1;
+				BookBase newBook = BookFactory.GetInstance().createBook(bookName, index);
+				bookList.add(newBook);
+				FileManager.saveNotebook(newBook);
+				JButton btn = createNotebookButton(newBook, index);
+				notebookBtnsList.add(btn);
+				panel.add(btn, BorderLayout.CENTER);
+				panel.revalidate();
 			}
 		});
         removeBtn.addActionListener(new ActionListener() {
-			
-        	/**
-        	 * waiting for click on next button
-        	 */
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				if (bookList.size() >= 2) {
+					FileManager.deleteNotebook(bookList.get(bookList.size() - 1));
+					bookList.remove(bookList.size() - 1);
+					notebookBtnsList.get(notebookBtnsList.size() - 1).hide();
+					notebookBtnsList.remove(notebookBtnsList.size() - 1);
+				}
 			}
 		});
         menuBtn.addActionListener(new ActionListener() {
 			
         	/**
-        	 * waiting for click on next button
+        	 * back to menu
         	 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,24 +95,29 @@ public class BookListFrame extends JFrame {
         controlBtnPanel.add(menuBtn);
 	}
 	
+	public JButton createNotebookButton(BookBase bookBase, int index) {
+		JButton btn = new JButton(String.format("Notebook %d", index));
+		btn.setBackground(bookBase.getColor());
+		btn.setFont(new Font("Arial", Font.PLAIN, 28));
+		btn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				NotebookFrame notebookFrame = new NotebookFrame(bookBase);
+			}
+		});
+		return btn;
+	}
+	
 	/**
 	 * creating the buttons
 	 */
-	public void createButtons() {
+	public void addNotebookButtons() {
 		notebookButtonsPanel = new JPanel();
 		int index = 1;
 		for (BookBase bookBase : bookList) {
-			JButton btn = new JButton(String.format("Notebook %d", index++));
-			btn.setBackground(bookBase.getColor());
-			btn.setFont(new Font("Arial", Font.PLAIN, 28));
+			JButton btn = createNotebookButton(bookBase, index++);
 			panel.add(btn, BorderLayout.CENTER);
-			System.out.println("add");
-			btn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					NotebookFrame notebookFrame = new NotebookFrame(bookBase);
-				}
-			});
+			this.notebookBtnsList.add(btn);
 		}
 	}
 }

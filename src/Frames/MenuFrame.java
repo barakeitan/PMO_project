@@ -44,6 +44,7 @@ public class MenuFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.add(panel);
 		setVisible(true);
+		setResizable(false);
 	}
 	
 	/**
