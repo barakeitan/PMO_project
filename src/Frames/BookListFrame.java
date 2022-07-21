@@ -12,7 +12,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import Logic.FileManager;
 import books.BookBase;
@@ -52,9 +55,26 @@ public class BookListFrame extends JFrame {
 		setVisible(true);
 	}
 
+	public ArrayList<Integer> searchInNoteBooks(String textToSearch) {
+		ArrayList<Integer> results = new ArrayList<Integer>();
+		for (int i = 1; i <= selectedNoteBooks.size(); i++) {
+			ArrayList<Page> pages = selectedNoteBooks.get(i).getPages();
+			for (Page page : pages) {
+				Integer pageNumber = page.checkIfTextExist(textToSearch);
+				if (pageNumber > -1) {
+					results.add(i);
+					results.add(pageNumber);
+					return results;
+				}
+			}
+		}
+		return results;
+	}
+
 	public void addControlButtons() {
 		final JButton addBtn = new JButton("Add new book");
 		addBtn.setEnabled(true);
+		final JButton searchBtn = new JButton("Search in NoteBooks");
 		final JButton removeBtn = new JButton("Remove last");
 		final JButton menuBtn = new JButton("Back to menu");
 		addBtn.addActionListener(new ActionListener() {
@@ -79,10 +99,36 @@ public class BookListFrame extends JFrame {
 				panel.revalidate();
 			}
 		});
+		searchBtn.addActionListener(new ActionListener() {
+
+			/**
+			 * add search text in notebook
+			 */
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = new JFrame();
+				String textToSearch = JOptionPane.showInputDialog(frame, "Enter Name");
+				// JPanel panel = new JPanel();
+				// JTextField textToSearch = new JTextField(10);
+				// panel.add(textToSearch);
+				// panel.add(new JLabel("Search :"));
+				// JOptionPane.showConfirmDialog(null, panel, "Search text : ",
+				// JOptionPane.OK_CANCEL_OPTION);
+
+				ArrayList<Integer> res = searchInNoteBooks(textToSearch);
+				JFrame f = new JFrame();
+				String str = String.format("your text was found in notebook %d in page %d ",
+						res.get(0), res.get(1));
+				JOptionPane.showMessageDialog(f, str);
+				panel.add(searchBtn, BorderLayout.CENTER);
+
+				panel.revalidate();
+			}
+		});
 		removeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (bookList.size() >= 2 && selectedNoteBooks.size() < bookList.size()) {
-					if (selectedNoteBooks.size() > 0){
+					if (selectedNoteBooks.size() > 0) {
 						for (BookBase notebook : selectedNoteBooks) {
 							Integer index = bookList.indexOf(notebook);
 							FileManager.deleteNotebook(bookList.get(index));
@@ -101,7 +147,7 @@ public class BookListFrame extends JFrame {
 					// notebookBtnsList.remove(notebookBtnsList.size() - 1);
 
 					// notebookCheckBoxList.get(notebookCheckBoxList.size() - 1).hide();
-					// notebookCheckBoxList.remove(notebookCheckBoxList.size() - 1);	
+					// notebookCheckBoxList.remove(notebookCheckBoxList.size() - 1);
 				}
 			}
 		});
@@ -180,12 +226,12 @@ public class BookListFrame extends JFrame {
 	}
 
 	// public void addNotebookCheckBox() {
-	// 	// notebookButtonsPanel = new JPanel();
-	// 	int index = 1;
-	// 	for (BookBase bookBase : bookList) {
-	// 		JCheckBox checkBox = createNotebookCheckBox(bookBase, index++);
-	// 		panel.add(checkBox, BorderLayout.EAST);
-	// 		this.notebookCheckBoxList.add(checkBox);
-	// 	}
+	// // notebookButtonsPanel = new JPanel();
+	// int index = 1;
+	// for (BookBase bookBase : bookList) {
+	// JCheckBox checkBox = createNotebookCheckBox(bookBase, index++);
+	// panel.add(checkBox, BorderLayout.EAST);
+	// this.notebookCheckBoxList.add(checkBox);
+	// }
 	// }
 }
