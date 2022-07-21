@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public abstract class BookBase {
 	String name;
 	Color color;
+	int bookIndex;
 	ArrayList<Page> pages;
 	
 	/**
@@ -18,20 +19,22 @@ public abstract class BookBase {
 	 * @param name of the notebook
 	 * @param pages of the notebook
 	 */
-	public BookBase(String name, Color color, ArrayList<Page> pages) {
+	public BookBase(String name, int bookIndex, Color color, ArrayList<Page> pages) {
 		this.name = name;
 		this.pages = pages;
 		this.color = color;
+		this.bookIndex = bookIndex;
 	}
 	
 	/**
 	 * 
 	 * @param name of the notebook
 	 */
-	public BookBase(String name, Color color) {
+	public BookBase(String name, int bookIndex, Color color) {
 		this.name = name;
 		this.pages = new ArrayList<Page>();
 		this.color = color;
+		this.bookIndex = bookIndex;
 	}
 
 	/**
@@ -59,6 +62,10 @@ public abstract class BookBase {
 		this.color = color;
 	}
 	
+	public void resetPages() {
+		this.pages = new ArrayList<Page>();
+	}
+	
 	/**
 	 * 
 	 * @return pages
@@ -76,11 +83,26 @@ public abstract class BookBase {
 		this.pages = pages;
 	}
 	
+	public int getBookIndex() {
+		return this.bookIndex;
+	}
+	
+	public void setBookIndex(int bookIndex) {
+		this.bookIndex = bookIndex;
+	}
+	
 	/**
 	 * adding page
 	 */
 	public void addPage() {
-		Page page = new Page(pages.size(), "");
+		this.addPage("");
+	}
+	
+	/**
+	 * adding page
+	 */
+	public void addPage(String context) {
+		Page page = new Page(pages.size(), context);
 		pages.add(page);
 	}
 	public void addPages(int numOfPages) {
@@ -88,4 +110,5 @@ public abstract class BookBase {
 			addPage();
 		}
 	}
+	public abstract BookBase clone();
 	}
