@@ -31,6 +31,7 @@ public class BookListFrame extends JFrame {
 	private List<JCheckBox> notebookCheckBoxList;
 	private String bookName;
 	private List<BookBase> selectedNoteBooks;
+	private JButton removeBtn;
 
 	public BookListFrame(String bookName) {
 		this.bookName = bookName;
@@ -74,11 +75,13 @@ public class BookListFrame extends JFrame {
 	public void addControlButtons() {
 		final JButton addBtn = new JButton("Add new book");
 		addBtn.setEnabled(true);
-		final JButton searchBtn = new JButton("Search in NoteBooks");
-		final JButton removeBtn = new JButton("Remove last");
-		final JButton menuBtn = new JButton("Back to menu");
-		addBtn.addActionListener(new ActionListener() {
 
+		removeBtn = new JButton("Remove");
+		removeBtn.setEnabled(false);
+
+		final JButton menuBtn = new JButton("Back to menu");
+
+		addBtn.addActionListener(new ActionListener() {
 			/**
 			 * add new notebook
 			 */
@@ -141,6 +144,7 @@ public class BookListFrame extends JFrame {
 						}
 					}
 					selectedNoteBooks.clear();
+					disableOrEnableRemoveBtn();
 					// FileManager.deleteNotebook(bookList.get(bookList.size() - 1));
 					// bookList.remove(bookList.size() - 1);
 					// notebookBtnsList.get(notebookBtnsList.size() - 1).hide();
@@ -216,10 +220,12 @@ public class BookListFrame extends JFrame {
 				if (!checkBox.isSelected() && selectedNoteBooks.contains(bookBase)) {
 					System.out.println("in condition one");
 					selectedNoteBooks.remove(selectedNoteBooks.indexOf(bookBase));
+
 				} else if (checkBox.isSelected() && !selectedNoteBooks.contains(bookBase)) {
 					System.out.println("in condition two");
 					selectedNoteBooks.add(bookBase);
 				}
+				disableOrEnableRemoveBtn();
 			}
 		});
 		return checkBox;
@@ -234,4 +240,12 @@ public class BookListFrame extends JFrame {
 	// this.notebookCheckBoxList.add(checkBox);
 	// }
 	// }
+
+	public void disableOrEnableRemoveBtn() {
+
+		if (selectedNoteBooks.size() > 0)
+			removeBtn.setEnabled(true);
+		else
+			removeBtn.setEnabled(false);
+	}
 }
