@@ -6,18 +6,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import Logic.FileManager;
 import books.BookBase;
 import books.BookFactory;
-import books.Page;
 
 public class BookListFrame extends JFrame {
 	private JPanel panel;
@@ -25,11 +26,11 @@ public class BookListFrame extends JFrame {
 	private JPanel notebookButtonsPanel;
 	private List<BookBase> bookList;
 	private List<JButton> notebookBtnsList;
-	private String bookName;
+	private String bookType;
 	
-	public BookListFrame(String bookName) {
-		this.bookName = bookName;
-		this.bookList = FileManager.getAllBookList(bookName);
+	public BookListFrame(String bookType) {
+		this.bookType = bookType;
+		this.bookList = getAllBookList(bookType);
 		this.notebookBtnsList = new ArrayList<JButton>();
 		this.panel = new MenuPanel();
 		this.controlBtnPanel = new JPanel();
@@ -47,6 +48,38 @@ public class BookListFrame extends JFrame {
 		setVisible(true);
 	}
 	
+	private List<BookBase> getAllBookList(String bookType) {
+		String folderName = String.format("%s\\%s", BookBase.bookBasePath, bookType);
+		List<BookBase> bookList = new ArrayList<BookBase>();
+		if (getSubDirectories(folderName) != null) {
+			for (String notebookFolder : getSubDirectories(folderName)) {
+				BookBase newBook = BookFactory.GetInstance().createBook(bookType, notebookFolder);
+				newBook.OpenNotebook(notebookFolder);
+				newBook.ReadNotebook(notebookFolder);
+				bookList.add(newBook);
+				System.out.println(folderName);
+			}
+		}
+		
+		if (bookList.size() == 0) {
+			BookBase newBook = BookFactory.GetInstance().createBook(bookType, "Notebook1");
+			bookList.add(newBook);
+			newBook.SaveNotebook();
+		}
+		return bookList;
+	}
+	
+	private static String[] getSubDirectories(String path) {
+		File file = new File(path);
+		String[] directories = file.list(new FilenameFilter() {
+		  @Override
+		  public boolean accept(File current, String name) {
+		    return new File(current, name).isDirectory();
+		  }
+		});
+		return directories;
+	}
+
 	public void addControlButtons() {
 		final JButton addBtn = new JButton("Add new book");
 		addBtn.setEnabled(true);
@@ -60,9 +93,9 @@ public class BookListFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = bookList.size() + 1;
-				BookBase newBook = BookFactory.GetInstance().createBook(bookName, index);
+				BookBase newBook = BookFactory.GetInstance().createBook(bookType, String.format("Notebook%d", index));
 				bookList.add(newBook);
-				FileManager.saveNotebook(newBook);
+				newBook.SaveNotebook();
 				JButton btn = createNotebookButton(newBook, index);
 				notebookBtnsList.add(btn);
 				panel.add(btn, BorderLayout.CENTER);
@@ -72,7 +105,7 @@ public class BookListFrame extends JFrame {
         removeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (bookList.size() >= 2) {
-					FileManager.deleteNotebook(bookList.get(bookList.size() - 1));
+					bookList.get(bookList.size() - 1).DeleteNotebook();
 					bookList.remove(bookList.size() - 1);
 					notebookBtnsList.get(notebookBtnsList.size() - 1).hide();
 					notebookBtnsList.remove(notebookBtnsList.size() - 1);
