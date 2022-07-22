@@ -1,9 +1,7 @@
 package Frames;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +15,7 @@ import javax.swing.ScrollPaneConstants;
 
 import books.BookBase;
 import books.Page;
-import Logic.FileManager;
+
 
 /**
  * 
@@ -107,7 +105,7 @@ public class NotebookFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				notebook.getPages().get(pageCount).setText(textArea.getText());
-				FileManager.saveNotebook(notebook);
+				notebook.SaveNotebook();
 				setVisible(false);
 			}
 		});
@@ -118,7 +116,7 @@ public class NotebookFrame extends JFrame{
 				Page pageToDelete = notebook.getPages().get(pageCount);
 				// notebook.getPages().get(pageCount).setText(textArea.getText());
 				// FileManager.saveNotebook(notebook);
-				FileManager.deletePage(notebook,pageToDelete);
+				notebook.deletePage(pageToDelete);
 
 				
 				if (pageCount == 0) {

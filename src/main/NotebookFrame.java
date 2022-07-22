@@ -106,6 +106,7 @@ public class NotebookFrame extends JFrame{
         	 */
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("back to main menu");
 				setVisible(false);
 			}
 		});

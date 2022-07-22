@@ -1,8 +1,6 @@
 package Frames;
 
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,7 +15,6 @@ public class MenuPanel extends JPanel {
 	    try {
 			g.drawImage(ImageIO.read(new File("images/background.jpg")), 0, 0, 400, 370, null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

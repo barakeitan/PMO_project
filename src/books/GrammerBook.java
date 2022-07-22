@@ -4,13 +4,13 @@ import java.awt.Color;
 
 public class GrammerBook extends BookBase {
 
-	public GrammerBook(int bookIndex) {
-		super("Grammer", bookIndex, Color.pink);
+	public GrammerBook(String name) {
+		super("Grammer", name, Color.pink);
 		addPages(15);
 	}
 
 	@Override
 	public BookBase clone() {
-		return new GrammerBook(bookIndex);
+		return new GrammerBook(name);
 	}
 }
