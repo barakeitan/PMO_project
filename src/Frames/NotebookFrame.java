@@ -117,23 +117,26 @@ public class NotebookFrame extends JFrame{
 				// notebook.getPages().get(pageCount).setText(textArea.getText());
 				// FileManager.saveNotebook(notebook);
 				notebook.deletePage(pageToDelete);
-
-				
-				if (pageCount == 0) {
-					prevBtn.setEnabled(false);
-				}
-				if (pageCount == notebook.getPages().size() - 1) {
-					nextBtn.setEnabled(false);
-				}
-					notebook.getPages().remove(pageCount);
-					Page currentPage = notebook.getPages().get(pageCount);
-					Page nextPage = notebook.getPages().get(pageCount + 1);
-					currentPage.setText(textArea.getText());
-					++pageCount;
+				notebook.getPages().remove(pageCount);
+				pageCount=0;
+				textArea.setText(notebook.getPages().get(pageCount).getText());
+				titleLabel.setText("Page " + (pageCount+1));
+				prevBtn.setEnabled(false);
+				setVisible(true);
+				// if (pageCount == 0) {
+				// 	prevBtn.setEnabled(false);
+				// }
+				// if (pageCount == notebook.getPages().size() - 1) {
+				// 	nextBtn.setEnabled(false);
+				// }
+				// 	Page currentPage = notebook.getPages().get(pageCount);
+				// 	Page nextPage = notebook.getPages().get(pageCount + 1);
+				// 	currentPage.setText(textArea.getText());
+				// 	++pageCount;
 					
-					textArea.setText(nextPage.getText());
-					titleLabel.setText("Page " + (pageCount));
-					setVisible(true);
+				// 	textArea.setText(nextPage.getText());
+				// 	titleLabel.setText("Page " + (pageCount));
+				// 	setVisible(true);
 
 				// setVisible(false);
 			}

@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import books.BookBase;
@@ -36,7 +37,7 @@ public class BookListFrame extends JFrame {
 	public BookListFrame(String bookType) {
 		this.bookType = bookType;
 		this.bookList = getAllBookList(bookType);
-		
+
 		this.notebookBtnsList = new ArrayList<JButton>();
 		this.notebookCheckBoxList = new ArrayList<JCheckBox>();
 		this.selectedNoteBooks = new ArrayList<BookBase>();
@@ -62,6 +63,7 @@ public class BookListFrame extends JFrame {
 		List<BookBase> bookList = new ArrayList<BookBase>();
 		if (getSubDirectories(folderName) != null) {
 			for (String notebookFolder : getSubDirectories(folderName)) {
+				System.out.println("notebookFolder = "+notebookFolder);
 				BookBase newBook = BookFactory.GetInstance().createBook(bookType, notebookFolder);
 				newBook.OpenNotebook(notebookFolder);
 				newBook.ReadNotebook(notebookFolder);
@@ -105,18 +107,25 @@ public class BookListFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = bookList.size() + 1;
-				BookBase newBook = BookFactory.GetInstance().createBook(bookType, String.format("Notebook%d", index));
-				bookList.add(newBook);
-				newBook.SaveNotebook();
-				JButton btn = createNotebookButton(newBook, index);
-				notebookBtnsList.add(btn);
-				panel.add(btn, BorderLayout.CENTER);
+				JFrame f=new JFrame();   
+				String name=JOptionPane.showInputDialog(f,"Enter Name"); 
+				if(!checkIfFileNameExists(name)){
+					
+					BookBase newBook = BookFactory.GetInstance().createBook(bookType, name);
+					// BookBase newBook = BookFactory.GetInstance().createBook(bookType, String.format("Notebook%d", index));
+					bookList.add(newBook);
+					newBook.SaveNotebook();
+					JButton btn = createNotebookButton(newBook, index);
+					notebookBtnsList.add(btn);
+					panel.add(btn, BorderLayout.CENTER);
+	
+					JCheckBox checkBox = createNotebookCheckBox(newBook, index);
+					notebookCheckBoxList.add(checkBox);
+					panel.add(checkBox, BorderLayout.WEST);
+	
+					panel.revalidate();
+				}
 
-				JCheckBox checkBox = createNotebookCheckBox(newBook, index);
-				notebookCheckBoxList.add(checkBox);
-				panel.add(checkBox, BorderLayout.WEST);
-
-				panel.revalidate();
 			}
 		});
 		removeBtn.addActionListener(new ActionListener() {
@@ -125,6 +134,7 @@ public class BookListFrame extends JFrame {
 					if (selectedNoteBooks.size() > 0){
 						for (BookBase notebook : selectedNoteBooks) {
 							Integer index = bookList.indexOf(notebook);
+							System.out.println("book is "+bookList.get(index).getName());
 							bookList.get(index).DeleteNotebook();
 							// FileManager.deleteNotebook(bookList.get(index));
 							bookList.remove(notebook);
@@ -164,7 +174,8 @@ public class BookListFrame extends JFrame {
 	}
 
 	public JButton createNotebookButton(BookBase bookBase, int index) {
-		JButton btn = new JButton(String.format("Notebook %d", index));
+		// JButton btn = new JButton(String.format("Notebook %d", index));
+		JButton btn = new JButton(bookBase.getName());
 		btn.setBackground(bookBase.getColor());
 		btn.setFont(new Font("Arial", Font.PLAIN, 28));
 		btn.addActionListener(new ActionListener() {
@@ -239,5 +250,14 @@ public class BookListFrame extends JFrame {
 			removeBtn.setEnabled(true);
 		else
 			removeBtn.setEnabled(false);
+	}
+
+	public boolean checkIfFileNameExists(String name){
+		for (BookBase book : bookList) {
+			if(book.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

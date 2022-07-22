@@ -71,6 +71,8 @@ public abstract class BookBase implements Inotable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+		this.Path = String.format("%s\\%s\\%s", bookBasePath, this.bookType, name);
+		this.fd = new File(this.Path);
 	}
 
 	public String getBookType()
@@ -176,11 +178,33 @@ public abstract class BookBase implements Inotable {
 
 	public void deletePage(Page page)
 	{
-		String pageName = String.format("%s\\page%d.txt", this.Path, page.getPageNum());
+		// String pageName = String.format("%s\\page%d.txt", this.Path, page.getPageNum());
 		// String pageName = String.format("%s\\%s\\notebook%d\\page%d.txt", bookBasePath, this.getName().replaceAll(" ", ""), this.getBookIndex(),page.getPageNum());
+		String pageName = String.format("%s\\%s\\%s\\page%d.txt", bookBasePath, this.getBookType().replaceAll(" ", ""), this.getName(),page.getPageNum());
 		File index = new File(pageName);
+		System.out.println(index.getName());
 		index.delete();
 	}
+
+	// private static boolean createFileIfItNotExist(String folderName, String fullFileName) {
+	// 	boolean isNewFileCreated = false;
+	// 	try {
+	// 		File folder = new File(folderName);
+
+	// 		if (!folder.exists()) {
+	// 			folder.mkdirs();
+	// 		}
+	// 	   File myFile = new File(fullFileName);
+	// 	   if(!myFile.isFile())
+	// 	   {
+	// 			myFile.createNewFile();
+	// 	   }
+		 
+	// 	  } catch (IOException e) {
+	// 		  System.out.println(e);
+	// 	  }
+	// 	return isNewFileCreated;
+	// }
 
 	private static boolean createFileIfItNotExist(String folderName, String fullFileName) {
 		boolean isNewFileCreated = false;
@@ -191,9 +215,10 @@ public abstract class BookBase implements Inotable {
 				folder.mkdirs();
 			}
 		   File myFile = new File(fullFileName);
-		   if(!myFile.isFile())
-		   {
-				myFile.createNewFile();
+		   if (myFile.createNewFile()){
+		    isNewFileCreated = true;
+		   } else{
+		    //System.out.println("File already exists.");
 		   }
 		 
 		  } catch (IOException e) {
@@ -243,6 +268,7 @@ public abstract class BookBase implements Inotable {
 	@Override
 	public int DeleteNotebook() {
 		String[]entries = this.fd.list();
+		System.out.println("this.path = "+this.Path);
 		for(String page: entries){
 		    File currentFile = new File(String.format("%s\\%s", this.Path, page));
 		    currentFile.delete();
@@ -257,7 +283,7 @@ public abstract class BookBase implements Inotable {
 		if(this.isCreated)
 		{
 			File[] pages = this.fd.listFiles();
-			// this.resetPages();
+			this.resetPages();
 			for (int i = 0; i < pages.length; i++) {
 				ReadPage(i);
 			}
@@ -267,15 +293,29 @@ public abstract class BookBase implements Inotable {
 
 	@Override
 	public int SaveNotebook() {
+		System.out.println("size = "+this.getPages().size());
+		for (int i = 0; i < this.getPages().size(); i++) {
+			try {
+				  String folderName = String.format("%s\\%s\\%s", bookBasePath, this.getBookType().replaceAll(" ", ""), this.getName());
+				  String fileName = String.format("page%d.txt", i);
+				  String fullFileName = String.format("%s\\%s", folderName, fileName);
+				  System.out.println(createFileIfItNotExist(folderName, fullFileName));
+			      FileWriter myWriter = new FileWriter(fullFileName);
+			      myWriter.write(this.getPages().get(i).getText());
+			      myWriter.close();
+			    } catch (IOException e) {
+			      e.printStackTrace();
+			    }
+		}
 		// Check if the notebook exists
-		if(!this.fd.exists())
-		{
-			this.CreateNewNotebook(this.name);
-			this.isCreated = true;
-		}
-		for(Page page : this.pages) {
-			this.WritePage(page);
-		}
+		// if(!this.fd.exists())
+		// {
+		// 	this.CreateNewNotebook(this.name);
+		// 	this.isCreated = true;
+		// }
+		// for(Page page : this.pages) {
+		// 	this.WritePage(page);
+		// }
 		return 0;
 	}
 }

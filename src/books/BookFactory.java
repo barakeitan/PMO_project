@@ -62,4 +62,15 @@ public class BookFactory {
 		}
 		return null;
 	}
+
+	public BookBase createBook(String bookName, int bookIndex) {
+		for (BookBase book : bookList) {
+			if (book.getName().equals(bookName)) {
+				BookBase newBook = book.clone();
+				newBook.setBookIndex(bookIndex);
+				return newBook;
+			}
+		}
+		return null;
+	}
 }
