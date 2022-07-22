@@ -78,7 +78,7 @@ public class BookListFrame extends JFrame {
 
 		removeBtn = new JButton("Remove");
 		removeBtn.setEnabled(false);
-
+		final JButton searchBtn = new JButton("Search text");
 		final JButton menuBtn = new JButton("Back to menu");
 
 		addBtn.addActionListener(new ActionListener() {
@@ -168,6 +168,7 @@ public class BookListFrame extends JFrame {
 		});
 		controlBtnPanel.add(addBtn);
 		controlBtnPanel.add(removeBtn);
+		controlBtnPanel.add(searchBtn);
 		controlBtnPanel.add(menuBtn);
 	}
 
