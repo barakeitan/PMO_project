@@ -121,5 +121,18 @@ public class FileManager {
 		  }
 		return isNewFileCreated;
 	}
+
+	public static void deletePage(BookBase book,Page page)
+	{
+		String pageName = String.format("%s\\%s\\notebook%d\\page%d.txt", FileManager.BOOKS_PATH, book.getName().replaceAll(" ", ""), book.getBookIndex(),page.getPageNum());
+		File index = new File(pageName);
+		// String[]entries = index.list();
+		// for(String s: entries){
+		// 	System.out.println("s is "+s);
+		//     File currentFile = new File(index.getPath(),s);
+		//     currentFile.delete();
+		// }
+		index.delete();
+	}
 	
 }
