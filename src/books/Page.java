@@ -3,16 +3,16 @@ package books;
 /**
  * 
  * @author Gal
- * Page is being read
+ *         Page is being read
  */
 public class Page {
 	private int pageNum;
 	private String text;
-	
+
 	/**
 	 * 
 	 * @param pageNum page number
-	 * @param text written text
+	 * @param text    written text
 	 */
 	public Page(int pageNum, String text) {
 		this.pageNum = pageNum;
@@ -30,7 +30,7 @@ public class Page {
 	/**
 	 * 
 	 * @param pageNum
-	 * sets page number
+	 *                sets page number
 	 */
 	public void setPageNum(int pageNum) {
 		this.pageNum = pageNum;
@@ -46,11 +46,20 @@ public class Page {
 
 	/**
 	 * 
-	 * @param text 
-	 * sets text of the page
+	 * @param text
+	 *             sets text of the page
 	 */
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
+	/**
+	 * 
+	 * @param text
+	 *             checks if specific text contains in this page
+	 */
+	public int checkIfTextExist(String textToSearch) {
+		return this.text.contains(textToSearch) ? this.pageNum : -1;
+	}
+
 }
