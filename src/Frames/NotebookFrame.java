@@ -30,12 +30,14 @@ public class NotebookFrame extends JFrame{
 	private int pageCount;
 	private JLabel titleLabel;
 	private JPanel panel;
+	private JPanel controlBtnPanel;
 	
 	/**
 	 * Constructor that reset the notebook frame
 	 */
 	public NotebookFrame(BookBase notebook) {
 		this.panel = new JPanel();
+		this.controlBtnPanel = new JPanel();
 		this.notebook = notebook;
 		this.pageCount = 0;
 		this.textArea = new JTextArea(notebook.getPages().get(pageCount).getText(), 10, 15);
@@ -60,6 +62,7 @@ public class NotebookFrame extends JFrame{
 		prevBtn.setEnabled(false);
         final JButton nextBtn = new JButton("Next page");
         final JButton saveBtn = new JButton("Save notebook & back to menu");
+		final JButton deleteBtn = new JButton("Delete page");
         prevBtn.addActionListener(new ActionListener() {
 			
         	/**
@@ -108,9 +111,45 @@ public class NotebookFrame extends JFrame{
 				setVisible(false);
 			}
 		});
+
+		deleteBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Page pageToDelete = notebook.getPages().get(pageCount);
+				// notebook.getPages().get(pageCount).setText(textArea.getText());
+				// FileManager.saveNotebook(notebook);
+				FileManager.deletePage(notebook,pageToDelete);
+
+				
+				if (pageCount == 0) {
+					prevBtn.setEnabled(false);
+				}
+				if (pageCount == notebook.getPages().size() - 1) {
+					nextBtn.setEnabled(false);
+				}
+					notebook.getPages().remove(pageCount);
+					Page currentPage = notebook.getPages().get(pageCount);
+					Page nextPage = notebook.getPages().get(pageCount + 1);
+					currentPage.setText(textArea.getText());
+					++pageCount;
+					
+					textArea.setText(nextPage.getText());
+					titleLabel.setText("Page " + (pageCount));
+					setVisible(true);
+
+				// setVisible(false);
+			}
+		});
+
         this.add(nextBtn, BorderLayout.EAST);
         this.add(prevBtn, BorderLayout.WEST);
-        this.add(saveBtn, BorderLayout.SOUTH);
+
+		this.add(controlBtnPanel, BorderLayout.SOUTH);
+		controlBtnPanel.add(saveBtn);
+		controlBtnPanel.add(deleteBtn);
+
+        // this.add(saveBtn, BorderLayout.SOUTH);
+		// this.add(deleteBtn,BorderLayout.SOUTH);
 	}
 	
 	/**
