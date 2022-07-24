@@ -8,14 +8,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
 
 import books.BookBase;
 import books.BookFactory;
@@ -57,14 +53,14 @@ public class MenuFrame extends JFrame{
 			if (count % 3 == 0) {
 				buttonsPanel.add(new JPanel());
 			}
-			JButton btn = new JButton(bookBase.getName());
+			JButton btn = new JButton(bookBase.getBookType());
 			btn.setBackground(bookBase.getColor());
 			buttonsPanel.get(buttonsPanel.size() - 1).add(btn, BorderLayout.CENTER);
 			btn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					//NotebookFrame frame = new NotebookFrame(bookBase);
-					BookListFrame bookListFrame = new BookListFrame(bookBase.getName());
+					BookListFrame bookListFrame = new BookListFrame(bookBase.getBookType());
 				}
 			});
 			count++;

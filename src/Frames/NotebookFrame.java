@@ -1,9 +1,7 @@
 package Frames;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +15,7 @@ import javax.swing.ScrollPaneConstants;
 
 import books.BookBase;
 import books.Page;
-import Logic.FileManager;
+
 
 /**
  * 
@@ -30,16 +28,18 @@ public class NotebookFrame extends JFrame{
 	private int pageCount;
 	private JLabel titleLabel;
 	private JPanel panel;
+	private JPanel controlBtnPanel;
 	
 	/**
 	 * Constructor that reset the notebook frame
 	 */
 	public NotebookFrame(BookBase notebook) {
 		this.panel = new JPanel();
+		this.controlBtnPanel = new JPanel();
 		this.notebook = notebook;
 		this.pageCount = 0;
 		this.textArea = new JTextArea(notebook.getPages().get(pageCount).getText(), 10, 15);
-		setSize(400, 400);
+		setSize(430, 400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.notebook = notebook;
 		addTitle();
@@ -60,6 +60,10 @@ public class NotebookFrame extends JFrame{
 		prevBtn.setEnabled(false);
         final JButton nextBtn = new JButton("Next page");
         final JButton saveBtn = new JButton("Save notebook & back to menu");
+		final JButton deleteBtn = new JButton("Delete page");
+
+		final JButton addBtn = new JButton("add page");
+		addBtn.setEnabled(false);
         prevBtn.addActionListener(new ActionListener() {
 			
         	/**
@@ -74,7 +78,13 @@ public class NotebookFrame extends JFrame{
 					if (pageCount == 0) {
 						prevBtn.setEnabled(false);
 					}
-					nextBtn.setEnabled(true);
+					if(notebook.getPages().size()-1==pageCount){
+						nextBtn.setEnabled(false);
+						addBtn.setEnabled(true);
+					}else{
+						addBtn.setEnabled(false);
+						nextBtn.setEnabled(true);
+					}
 					textArea.setText(prevPage.getText());
 					titleLabel.setText("Page " + (pageCount + 1));
 					setVisible(true);
@@ -93,6 +103,10 @@ public class NotebookFrame extends JFrame{
 					++pageCount;
 					if (pageCount == notebook.getPages().size() - 1) {
 						nextBtn.setEnabled(false);
+						addBtn.setEnabled(true);
+					}else{
+						nextBtn.setEnabled(true);
+						addBtn.setEnabled(false);
 					}
 					prevBtn.setEnabled(true);
 					textArea.setText(nextPage.getText());
@@ -104,13 +118,49 @@ public class NotebookFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				notebook.getPages().get(pageCount).setText(textArea.getText());
-				FileManager.saveNotebook(notebook);
+				notebook.SaveNotebook();
 				setVisible(false);
 			}
 		});
+
+		deleteBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Page pageToDelete = notebook.getPages().get(pageCount);
+				notebook.deletePage(pageToDelete);
+				notebook.getPages().remove(pageCount);
+				pageCount=0;
+				textArea.setText(notebook.getPages().get(pageCount).getText());
+				titleLabel.setText("Page " + (pageCount+1));
+				prevBtn.setEnabled(false);
+				nextBtn.setEnabled(true);
+				addBtn.setEnabled(false);
+				setVisible(true);
+			}
+		});
+
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Page page = new Page(notebook.getPages().size(), "");
+				notebook.WritePage(page);
+				notebook.addPage();
+				++pageCount;
+				
+				textArea.setText(page.getText());
+				titleLabel.setText("Page " + (pageCount + 1));
+
+
+			}
+		});
+
         this.add(nextBtn, BorderLayout.EAST);
         this.add(prevBtn, BorderLayout.WEST);
-        this.add(saveBtn, BorderLayout.SOUTH);
+
+		this.add(controlBtnPanel, BorderLayout.SOUTH);
+		controlBtnPanel.add(saveBtn);
+		controlBtnPanel.add(deleteBtn);
+		controlBtnPanel.add(addBtn);
 	}
 	
 	/**

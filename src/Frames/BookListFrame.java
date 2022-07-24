@@ -5,19 +5,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-import Logic.FileManager;
 import books.BookBase;
 import books.BookFactory;
 import books.Page;
@@ -29,13 +29,15 @@ public class BookListFrame extends JFrame {
 	private List<BookBase> bookList;
 	private List<JButton> notebookBtnsList;
 	private List<JCheckBox> notebookCheckBoxList;
-	private String bookName;
 	private List<BookBase> selectedNoteBooks;
 	private JButton removeBtn;
+	private JButton searchBtn;
+	private String bookType;
 
-	public BookListFrame(String bookName) {
-		this.bookName = bookName;
-		this.bookList = FileManager.getAllBookList(bookName);
+	
+	public BookListFrame(String bookType) {
+		this.bookType = bookType;
+		this.bookList = getAllBookList(bookType);
 		this.notebookBtnsList = new ArrayList<JButton>();
 		this.notebookCheckBoxList = new ArrayList<JCheckBox>();
 		this.selectedNoteBooks = new ArrayList<BookBase>();
@@ -44,21 +46,49 @@ public class BookListFrame extends JFrame {
 		setSize(370, 400);
 		addControlButtons();
 		addNotebookButtons();
-		// addNotebookCheckBox();
 		panel.setBackground(new Color(150, 255, 255));
 		controlBtnPanel.setBackground(new Color(231, 154, 100));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		notebookButtonsPanel.setOpaque(false);
-		// this.add(notebookButtonsPanel, BorderLayout.NORTH);
-		// this.panel.add(controlBtnPanel);
 		this.add(panel);
 		this.add(controlBtnPanel, BorderLayout.SOUTH);
 		setVisible(true);
 	}
+	
+	private List<BookBase> getAllBookList(String bookType) {
+		String folderName = String.format("%s\\%s", BookBase.bookBasePath, bookType);
+		List<BookBase> bookList = new ArrayList<BookBase>();
+		if (getSubDirectories(folderName) != null) {
+			for (String notebookFolder : getSubDirectories(folderName)) {
+				BookBase newBook = BookFactory.GetInstance().createBook(bookType, notebookFolder);
+				newBook.OpenNotebook(notebookFolder);
+				newBook.ReadNotebook(notebookFolder);
+				bookList.add(newBook);
+			}
+		}
+		
+		if (bookList.size() == 0) {
+			BookBase newBook = BookFactory.GetInstance().createBook(bookType, "Notebook1");
+			bookList.add(newBook);
+			newBook.SaveNotebook();
+		}
+		return bookList;
+	}
+	
+	private static String[] getSubDirectories(String path) {
+		File file = new File(path);
+		String[] directories = file.list(new FilenameFilter() {
+		  @Override
+		  public boolean accept(File current, String name) {
+		    return new File(current, name).isDirectory();
+		  }
+		});
+		return directories;
+	}
 
 	public ArrayList<Integer> searchInNoteBooks(String textToSearch) {
 		ArrayList<Integer> results = new ArrayList<Integer>();
-		for (int i = 1; i <= selectedNoteBooks.size(); i++) {
+		for (int i = 0; i < selectedNoteBooks.size(); i++) {
 			ArrayList<Page> pages = selectedNoteBooks.get(i).getPages();
 			for (Page page : pages) {
 				Integer pageNumber = page.checkIfTextExist(textToSearch);
@@ -73,12 +103,13 @@ public class BookListFrame extends JFrame {
 	}
 
 	public void addControlButtons() {
-		final JButton addBtn = new JButton("Add new book");
+		final JButton addBtn = new JButton("Add");
 		addBtn.setEnabled(true);
 
 		removeBtn = new JButton("Remove");
 		removeBtn.setEnabled(false);
-		final JButton searchBtn = new JButton("Search text");
+		searchBtn = new JButton("Search");
+		searchBtn.setEnabled(false);
 		final JButton menuBtn = new JButton("Back to menu");
 
 		addBtn.addActionListener(new ActionListener() {
@@ -88,18 +119,24 @@ public class BookListFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int index = bookList.size() + 1;
-				BookBase newBook = BookFactory.GetInstance().createBook(bookName, index);
-				bookList.add(newBook);
-				FileManager.saveNotebook(newBook);
-				JButton btn = createNotebookButton(newBook, index);
-				notebookBtnsList.add(btn);
-				panel.add(btn, BorderLayout.CENTER);
+				JFrame f=new JFrame();   
+				String name=JOptionPane.showInputDialog(f,"Enter Name"); 
+				if(name!=null && !checkIfFileNameExists(name)){
+					
+					BookBase newBook = BookFactory.GetInstance().createBook(bookType, name);
+					bookList.add(newBook);
+					newBook.SaveNotebook();
+					JButton btn = createNotebookButton(newBook, index);
+					notebookBtnsList.add(btn);
+					panel.add(btn, BorderLayout.CENTER);
+	
+					JCheckBox checkBox = createNotebookCheckBox(newBook, index);
+					notebookCheckBoxList.add(checkBox);
+					panel.add(checkBox, BorderLayout.WEST);
+	
+					panel.revalidate();
+				}
 
-				JCheckBox checkBox = createNotebookCheckBox(newBook, index);
-				notebookCheckBoxList.add(checkBox);
-				panel.add(checkBox, BorderLayout.WEST);
-
-				panel.revalidate();
 			}
 		});
 		searchBtn.addActionListener(new ActionListener() {
@@ -110,31 +147,25 @@ public class BookListFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame();
-				String textToSearch = JOptionPane.showInputDialog(frame, "Enter Name");
-				// JPanel panel = new JPanel();
-				// JTextField textToSearch = new JTextField(10);
-				// panel.add(textToSearch);
-				// panel.add(new JLabel("Search :"));
-				// JOptionPane.showConfirmDialog(null, panel, "Search text : ",
-				// JOptionPane.OK_CANCEL_OPTION);
-
+				String textToSearch = JOptionPane.showInputDialog(frame, "Enter Search Keywords");
 				ArrayList<Integer> res = searchInNoteBooks(textToSearch);
 				JFrame f = new JFrame();
-				String str = String.format("your text was found in notebook %d in page %d ",
-						res.get(0), res.get(1));
+				String str = "Your text was not found in this search 😒";
+				if(res.size() > 0) 
+				{
+					str = String.format("your text was found in notebook %s  in page %d ",
+							selectedNoteBooks.get(res.get(0)).getName(), res.get(1) + 1);
+				}
 				JOptionPane.showMessageDialog(f, str);
-				panel.add(searchBtn, BorderLayout.CENTER);
-
-				panel.revalidate();
 			}
 		});
 		removeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (bookList.size() >= 2 && selectedNoteBooks.size() < bookList.size()) {
+				if (selectedNoteBooks.size() <= bookList.size()) {
 					if (selectedNoteBooks.size() > 0) {
 						for (BookBase notebook : selectedNoteBooks) {
 							Integer index = bookList.indexOf(notebook);
-							FileManager.deleteNotebook(bookList.get(index));
+							bookList.get(index).DeleteNotebook();
 							bookList.remove(notebook);
 							notebookBtnsList.get(index).hide();
 							notebookBtnsList.remove(notebookBtnsList.get(index));
@@ -144,14 +175,6 @@ public class BookListFrame extends JFrame {
 						}
 					}
 					selectedNoteBooks.clear();
-					disableOrEnableRemoveBtn();
-					// FileManager.deleteNotebook(bookList.get(bookList.size() - 1));
-					// bookList.remove(bookList.size() - 1);
-					// notebookBtnsList.get(notebookBtnsList.size() - 1).hide();
-					// notebookBtnsList.remove(notebookBtnsList.size() - 1);
-
-					// notebookCheckBoxList.get(notebookCheckBoxList.size() - 1).hide();
-					// notebookCheckBoxList.remove(notebookCheckBoxList.size() - 1);
 				}
 			}
 		});
@@ -173,7 +196,7 @@ public class BookListFrame extends JFrame {
 	}
 
 	public JButton createNotebookButton(BookBase bookBase, int index) {
-		JButton btn = new JButton(String.format("Notebook %d", index));
+		JButton btn = new JButton(bookBase.getName());
 		btn.setBackground(bookBase.getColor());
 		btn.setFont(new Font("Arial", Font.PLAIN, 28));
 		btn.addActionListener(new ActionListener() {
@@ -215,38 +238,33 @@ public class BookListFrame extends JFrame {
 		checkBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("index is " + index);
-				System.out.println("is selected " + checkBox.isSelected());
-
 				if (!checkBox.isSelected() && selectedNoteBooks.contains(bookBase)) {
-					System.out.println("in condition one");
 					selectedNoteBooks.remove(selectedNoteBooks.indexOf(bookBase));
 
 				} else if (checkBox.isSelected() && !selectedNoteBooks.contains(bookBase)) {
-					System.out.println("in condition two");
 					selectedNoteBooks.add(bookBase);
 				}
-				disableOrEnableRemoveBtn();
+				disableOrEnableBtn(removeBtn);
+				disableOrEnableBtn(searchBtn);
 			}
 		});
 		return checkBox;
 	}
 
-	// public void addNotebookCheckBox() {
-	// // notebookButtonsPanel = new JPanel();
-	// int index = 1;
-	// for (BookBase bookBase : bookList) {
-	// JCheckBox checkBox = createNotebookCheckBox(bookBase, index++);
-	// panel.add(checkBox, BorderLayout.EAST);
-	// this.notebookCheckBoxList.add(checkBox);
-	// }
-	// }
-
-	public void disableOrEnableRemoveBtn() {
+	public void disableOrEnableBtn(JButton Btn) {
 
 		if (selectedNoteBooks.size() > 0)
-			removeBtn.setEnabled(true);
+			Btn.setEnabled(true);
 		else
-			removeBtn.setEnabled(false);
+			Btn.setEnabled(false);
+	}
+
+	public boolean checkIfFileNameExists(String name){
+		for (BookBase book : bookList) {
+			if(book.getName().equals(name)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

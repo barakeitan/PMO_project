@@ -72,7 +72,6 @@ public class NotebookFrame extends JFrame{
 						prevBtn.setEnabled(false);
 					}
 					nextBtn.setEnabled(true);
-					System.out.println(pageCount);
 					textArea.setText(prevPage.getText());
 					titleLabel.setText("Page " + (pageCount + 1));
 					setVisible(true);
@@ -94,7 +93,6 @@ public class NotebookFrame extends JFrame{
 					}
 					prevBtn.setEnabled(true);
 					textArea.setText(nextPage.getText());
-					System.out.println(pageCount);
 					titleLabel.setText("Page " + (pageCount + 1));
 					setVisible(true);
 			}

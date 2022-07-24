@@ -3,7 +3,7 @@ package books;
 /**
  * An interface for notebooks to implement basic operations
  */
-public interface Inotablale {
+public interface Inotable {
     
     /**
      * opens a notebook for editing
@@ -24,9 +24,9 @@ public interface Inotablale {
     /**
      * Return the content of a given page
      * @param page
-     * @return a buffer containing the page content
+     * @return a String containing the page content
      */
-    public StringBuffer ReadPage(int page);
+    public String ReadPage(int page);
 
     /**
      * Saves the content of a single page
@@ -37,10 +37,9 @@ public interface Inotablale {
 
     /**
      * Saves an entire notebook
-     * @param book - a book object containing the name and content of the book
      * @return The number of successfull pages saved
      */
-    public int WriteNotebook(BookBase book);
+    public int SaveNotebook();
 
     /**
      * Reads an entire notebook and creates a book base from the content
@@ -52,16 +51,14 @@ public interface Inotablale {
 
     /**
      * Creates a new notebook
-     * @param path - path to save the notebook
-     * @param name - the name of the notebook
+     * @param name - the name of the notebook to be created when the path is known
      * @return 0 on success, -1 otherwise
      */
-    public int CreateNewNotebook(String path, String name);
+    public int CreateNewNotebook(String name);
 
     /**
      * Removes a notebook from the file system
-     * @param Path - The path where the notebook is saved
      * @return 0 on success, -1 otherwise
      */
-    public int DeleteNotebook(String Path);
+    public int DeleteNotebook();
 }
