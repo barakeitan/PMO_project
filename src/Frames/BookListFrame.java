@@ -29,7 +29,6 @@ public class BookListFrame extends JFrame {
 	private List<BookBase> bookList;
 	private List<JButton> notebookBtnsList;
 	private List<JCheckBox> notebookCheckBoxList;
-	// private String bookName;
 	private List<BookBase> selectedNoteBooks;
 	private JButton removeBtn;
 	private JButton searchBtn;
@@ -47,13 +46,10 @@ public class BookListFrame extends JFrame {
 		setSize(370, 400);
 		addControlButtons();
 		addNotebookButtons();
-		// addNotebookCheckBox();
 		panel.setBackground(new Color(150, 255, 255));
 		controlBtnPanel.setBackground(new Color(231, 154, 100));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		notebookButtonsPanel.setOpaque(false);
-		// this.add(notebookButtonsPanel, BorderLayout.NORTH);
-		// this.panel.add(controlBtnPanel);
 		this.add(panel);
 		this.add(controlBtnPanel, BorderLayout.SOUTH);
 		setVisible(true);
@@ -64,12 +60,10 @@ public class BookListFrame extends JFrame {
 		List<BookBase> bookList = new ArrayList<BookBase>();
 		if (getSubDirectories(folderName) != null) {
 			for (String notebookFolder : getSubDirectories(folderName)) {
-				System.out.println("notebookFolder = "+notebookFolder);
 				BookBase newBook = BookFactory.GetInstance().createBook(bookType, notebookFolder);
 				newBook.OpenNotebook(notebookFolder);
 				newBook.ReadNotebook(notebookFolder);
 				bookList.add(newBook);
-				System.out.println(folderName);
 			}
 		}
 		
@@ -130,7 +124,6 @@ public class BookListFrame extends JFrame {
 				if(!checkIfFileNameExists(name)){
 					
 					BookBase newBook = BookFactory.GetInstance().createBook(bookType, name);
-					// BookBase newBook = BookFactory.GetInstance().createBook(bookType, String.format("Notebook%d", index));
 					bookList.add(newBook);
 					newBook.SaveNotebook();
 					JButton btn = createNotebookButton(newBook, index);
@@ -155,12 +148,6 @@ public class BookListFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame();
 				String textToSearch = JOptionPane.showInputDialog(frame, "Enter Search Keywords");
-				// JPanel panel = new JPanel();
-				// JTextField textToSearch = new JTextField(10);
-				// panel.add(textToSearch);
-				// panel.add(new JLabel("Search :"));
-				// JOptionPane.showConfirmDialog(null, panel, "Search text : ",
-				// JOptionPane.OK_CANCEL_OPTION);
 				ArrayList<Integer> res = searchInNoteBooks(textToSearch);
 				JFrame f = new JFrame();
 				String str = "Your text was not found in this search 😒";
@@ -178,9 +165,7 @@ public class BookListFrame extends JFrame {
 					if (selectedNoteBooks.size() > 0) {
 						for (BookBase notebook : selectedNoteBooks) {
 							Integer index = bookList.indexOf(notebook);
-							System.out.println("book is "+bookList.get(index).getName());
 							bookList.get(index).DeleteNotebook();
-							// FileManager.deleteNotebook(bookList.get(index));
 							bookList.remove(notebook);
 							notebookBtnsList.get(index).hide();
 							notebookBtnsList.remove(notebookBtnsList.get(index));
@@ -190,13 +175,6 @@ public class BookListFrame extends JFrame {
 						}
 					}
 					selectedNoteBooks.clear();
-					// FileManager.deleteNotebook(bookList.get(bookList.size() - 1));
-					// bookList.remove(bookList.size() - 1);
-					// notebookBtnsList.get(notebookBtnsList.size() - 1).hide();
-					// notebookBtnsList.remove(notebookBtnsList.size() - 1);
-
-					// notebookCheckBoxList.get(notebookCheckBoxList.size() - 1).hide();
-					// notebookCheckBoxList.remove(notebookCheckBoxList.size() - 1);
 				}
 			}
 		});
@@ -218,7 +196,6 @@ public class BookListFrame extends JFrame {
 	}
 
 	public JButton createNotebookButton(BookBase bookBase, int index) {
-		// JButton btn = new JButton(String.format("Notebook %d", index));
 		JButton btn = new JButton(bookBase.getName());
 		btn.setBackground(bookBase.getColor());
 		btn.setFont(new Font("Arial", Font.PLAIN, 28));
@@ -261,15 +238,10 @@ public class BookListFrame extends JFrame {
 		checkBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("index is " + index);
-				System.out.println("is selected " + checkBox.isSelected());
-
 				if (!checkBox.isSelected() && selectedNoteBooks.contains(bookBase)) {
-					System.out.println("in condition one");
 					selectedNoteBooks.remove(selectedNoteBooks.indexOf(bookBase));
 
 				} else if (checkBox.isSelected() && !selectedNoteBooks.contains(bookBase)) {
-					System.out.println("in condition two");
 					selectedNoteBooks.add(bookBase);
 				}
 				disableOrEnableBtn(removeBtn);
