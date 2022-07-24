@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 /**
  * notebook is a lot of pages
+ * 
  * @author Gal
  *
  */
@@ -29,7 +30,7 @@ public abstract class BookBase implements Inotable {
 	
 	/**
 	 * 
-	 * @param name of the notebook
+	 * @param name  of the notebook
 	 * @param pages of the notebook
 	 */
 	public BookBase(String bookType, String name, Color color, ArrayList<Page> pages) {
@@ -41,7 +42,7 @@ public abstract class BookBase implements Inotable {
 		this.fd = new File(this.Path);
 		this.isCreated = false;
 	}
-	
+
 	/**
 	 * 
 	 * @param name of the notebook
@@ -67,7 +68,7 @@ public abstract class BookBase implements Inotable {
 	/**
 	 * 
 	 * @param name
-	 * sets the name of the notebook
+	 *             sets the name of the notebook
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -91,11 +92,11 @@ public abstract class BookBase implements Inotable {
 	public void setColor(Color color) {
 		this.color = color;
 	}
-	
+
 	public void resetPages() {
 		this.pages = new ArrayList<Page>();
 	}
-	
+
 	/**
 	 * 
 	 * @return pages
@@ -107,27 +108,27 @@ public abstract class BookBase implements Inotable {
 	/**
 	 * 
 	 * @param pages
-	 * sets the pages
+	 *              sets the pages
 	 */
 	public void setPages(ArrayList<Page> pages) {
 		this.pages = pages;
 	}
-	
+
 	public int getBookIndex() {
 		return this.bookIndex;
 	}
-	
+
 	public void setBookIndex(int bookIndex) {
 		this.bookIndex = bookIndex;
 	}
-	
+
 	/**
 	 * adding page
 	 */
 	public void addPage() {
 		this.addPage("");
 	}
-	
+
 	/**
 	 * adding page
 	 */
@@ -135,11 +136,13 @@ public abstract class BookBase implements Inotable {
 		Page page = new Page(pages.size(), context);
 		pages.add(page);
 	}
+
 	public void addPages(int numOfPages) {
 		for (int i = 0; i < numOfPages; i++) {
 			addPage();
 		}
 	}
+
 	public abstract BookBase clone();
 
 	@Override
