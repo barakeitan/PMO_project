@@ -121,7 +121,7 @@ public class BookListFrame extends JFrame {
 				int index = bookList.size() + 1;
 				JFrame f=new JFrame();   
 				String name=JOptionPane.showInputDialog(f,"Enter Name"); 
-				if(!checkIfFileNameExists(name)){
+				if(name!=null && !checkIfFileNameExists(name)){
 					
 					BookBase newBook = BookFactory.GetInstance().createBook(bookType, name);
 					bookList.add(newBook);
