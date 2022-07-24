@@ -39,7 +39,7 @@ public class NotebookFrame extends JFrame{
 		this.notebook = notebook;
 		this.pageCount = 0;
 		this.textArea = new JTextArea(notebook.getPages().get(pageCount).getText(), 10, 15);
-		setSize(400, 400);
+		setSize(430, 400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.notebook = notebook;
 		addTitle();
@@ -61,6 +61,9 @@ public class NotebookFrame extends JFrame{
         final JButton nextBtn = new JButton("Next page");
         final JButton saveBtn = new JButton("Save notebook & back to menu");
 		final JButton deleteBtn = new JButton("Delete page");
+
+		final JButton addBtn = new JButton("add page");
+		addBtn.setEnabled(false);
         prevBtn.addActionListener(new ActionListener() {
 			
         	/**
@@ -75,7 +78,13 @@ public class NotebookFrame extends JFrame{
 					if (pageCount == 0) {
 						prevBtn.setEnabled(false);
 					}
-					nextBtn.setEnabled(true);
+					if(notebook.getPages().size()-1==pageCount){
+						nextBtn.setEnabled(false);
+						addBtn.setEnabled(true);
+					}else{
+						addBtn.setEnabled(false);
+						nextBtn.setEnabled(true);
+					}
 					textArea.setText(prevPage.getText());
 					titleLabel.setText("Page " + (pageCount + 1));
 					setVisible(true);
@@ -94,6 +103,10 @@ public class NotebookFrame extends JFrame{
 					++pageCount;
 					if (pageCount == notebook.getPages().size() - 1) {
 						nextBtn.setEnabled(false);
+						addBtn.setEnabled(true);
+					}else{
+						nextBtn.setEnabled(true);
+						addBtn.setEnabled(false);
 					}
 					prevBtn.setEnabled(true);
 					textArea.setText(nextPage.getText());
@@ -114,31 +127,30 @@ public class NotebookFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Page pageToDelete = notebook.getPages().get(pageCount);
-				// notebook.getPages().get(pageCount).setText(textArea.getText());
-				// FileManager.saveNotebook(notebook);
 				notebook.deletePage(pageToDelete);
 				notebook.getPages().remove(pageCount);
 				pageCount=0;
 				textArea.setText(notebook.getPages().get(pageCount).getText());
 				titleLabel.setText("Page " + (pageCount+1));
 				prevBtn.setEnabled(false);
+				nextBtn.setEnabled(true);
+				addBtn.setEnabled(false);
 				setVisible(true);
-				// if (pageCount == 0) {
-				// 	prevBtn.setEnabled(false);
-				// }
-				// if (pageCount == notebook.getPages().size() - 1) {
-				// 	nextBtn.setEnabled(false);
-				// }
-				// 	Page currentPage = notebook.getPages().get(pageCount);
-				// 	Page nextPage = notebook.getPages().get(pageCount + 1);
-				// 	currentPage.setText(textArea.getText());
-				// 	++pageCount;
-					
-				// 	textArea.setText(nextPage.getText());
-				// 	titleLabel.setText("Page " + (pageCount));
-				// 	setVisible(true);
+			}
+		});
 
-				// setVisible(false);
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Page page = new Page(notebook.getPages().size(), "");
+				notebook.WritePage(page);
+				notebook.addPage();
+				++pageCount;
+				
+				textArea.setText(page.getText());
+				titleLabel.setText("Page " + (pageCount + 1));
+
+
 			}
 		});
 
@@ -148,9 +160,7 @@ public class NotebookFrame extends JFrame{
 		this.add(controlBtnPanel, BorderLayout.SOUTH);
 		controlBtnPanel.add(saveBtn);
 		controlBtnPanel.add(deleteBtn);
-
-        // this.add(saveBtn, BorderLayout.SOUTH);
-		// this.add(deleteBtn,BorderLayout.SOUTH);
+		controlBtnPanel.add(addBtn);
 	}
 	
 	/**
