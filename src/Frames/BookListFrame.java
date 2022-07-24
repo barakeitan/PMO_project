@@ -166,15 +166,15 @@ public class BookListFrame extends JFrame {
 				String str = "Your text was not found in this search 😒";
 				if(res.size() > 0) 
 				{
-					str = String.format("your text was found in notebook %d in page %d ",
-							res.get(0) + 1, res.get(1) + 1);
+					str = String.format("your text was found in notebook %s  in page %d ",
+							selectedNoteBooks.get(res.get(0)).getName(), res.get(1) + 1);
 				}
 				JOptionPane.showMessageDialog(f, str);
 			}
 		});
 		removeBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (bookList.size() >= 2 && selectedNoteBooks.size() < bookList.size()) {
+				if (selectedNoteBooks.size() <= bookList.size()) {
 					if (selectedNoteBooks.size() > 0) {
 						for (BookBase notebook : selectedNoteBooks) {
 							Integer index = bookList.indexOf(notebook);
@@ -278,16 +278,6 @@ public class BookListFrame extends JFrame {
 		});
 		return checkBox;
 	}
-
-	// public void addNotebookCheckBox() {
-	// // notebookButtonsPanel = new JPanel();
-	// int index = 1;
-	// for (BookBase bookBase : bookList) {
-	// JCheckBox checkBox = createNotebookCheckBox(bookBase, index++);
-	// panel.add(checkBox, BorderLayout.EAST);
-	// this.notebookCheckBoxList.add(checkBox);
-	// }
-	// }
 
 	public void disableOrEnableBtn(JButton Btn) {
 
